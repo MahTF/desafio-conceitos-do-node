@@ -99,7 +99,18 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { id } = request.params;
+
+  const task = user.todos.find((task) => task.id === id);
+
+  if (!task) {
+    return response.status(404).json({ error: "Task not found!" });
+  }
+
+  user.todos.splice(task, 1);
+
+  return response.status(204).json({ success: "Task deleted!" });
 });
 
 module.exports = app;
